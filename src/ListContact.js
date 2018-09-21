@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import escapeRegExp from 'escape-string-regexp'
-import soryBy from 'sort-by'
+import sortBy from 'sort-by'
 
 class ListContacts extends Component {
   static propTypes = {
@@ -19,14 +19,16 @@ class ListContacts extends Component {
     })
   }
   render () {
+    const { contacts, onDeleteContact } = this.props
+    const { query } = this.state
     let showingContacts
-    if (this.state.query) {
-      const match = new RegExp(escapeRegExp(this.state.query), 'i')
-      showingContacts = this.props.contacts.filter((c) => match.test(c.name))
+    if (query) {
+      const match = new RegExp(escapeRegExp(query), 'i')
+      showingContacts = contacts.filter((c) => match.test(c.name))
     } else {
-      showingContacts= this.props.contacts
+      showingContacts= contacts
     }
-    showingContacts.sort(soryBy('name'))
+    showingContacts.sort(sortBy('name'))
     return (
       <div className='list-contacts'>
       <div className='list-contacts-top'>
@@ -34,7 +36,7 @@ class ListContacts extends Component {
           className='search-contacts'
           type='text'
           placeholder='Search Contacts'
-          value ={this.state.query}
+          value ={query}
           onChange={(event) => this.UpdateQuery(event.target.value)} />
       </div>
         <ol className='contact-list'>
@@ -45,7 +47,7 @@ class ListContacts extends Component {
                 <p>{contact.name}</p>
                 <p>{contact.email}</p>
               </div>
-              <button onClick={() => this.props.onDeleteContact(contact)} className='contact-remove'>
+              <button onClick={() => onDeleteContact(contact)} className='contact-remove'>
                 Close
               </button>
             </li>)
